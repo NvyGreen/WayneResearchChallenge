@@ -19,19 +19,21 @@ The first line of each file represents `N`, the number of nodes, and
 subsequent lines represent edges. Each node is numbered from 0 to `N-1`.
 The goal was to calculate the number of connected components in each
 graph. Additionally, I also had to create a histogram of the distribution
-of degrees in each graph.
+of degrees in each graph. Duplicate edges should be ignored, and isolated
+nodes count as components.
 
 ## Approach
-1. I stored all of the given input files in `sample_input/`, then looped
-   through the directory to analyze each file.
+1. I stored all of the given input files in a directory so I could easily
+   loop through them and analyze each file.
 2. For each file, after reading the first line representing `N`, the
    number of nodes, I store the edges represented by the rest of the lines
    in a `defaultdict[int, set]`, with the key being the node, and the value
    being all the connected nodes. I used a `set` so duplicate edges aren't
-   counted, and a `defaultdict` to make it easier to append nodes. I treated
-   the graph as undirected since the undergrad case doesn't require checking
-   for strongly connected components. I also use `.strip()` to ignore the
-   final trailing blank line in each file.
+   counted, and a `defaultdict` to make it easier to append nodes and so I
+   don't get a `KeyError` on isolated nodes when I'm looping later. I treated
+   the graph as undirected, since the undergrad requirement only covers the
+   undirected case. I skip any line that is empty after `.strip()`, since every
+   sample file ends with a blank line.
 3. To count the number of connected components, I used an iterative DFS
    approach with a stack. For each unvisited node, I'd traverse to every
    other node I could reach from it, marking them visited on the way. I 
@@ -51,9 +53,10 @@ of degrees in each graph.
    `sample_input/test_input`: one with an isolated node, one with all
    nodes connected, and one with no nodes connected. Because I knew the
    results for these graphs, I could assert on them before I ran my code
-   on the real files. `assert sum(degrees.values()) == n` checks that
-   every node was accounted for when I looped for degree/component counting,
-   and I also assert that the component count is what I expected.
+   on the real files. `assert sum(degrees.values()) == n` (where `degrees` is
+   the data for the histogram) checks that every node was accounted for when I
+   looped for degree/component counting, and I also assert that the component
+   count is what I expected.
 2. Additionally, when I'm building the `x` and `y` values for the real files'
    graphs, I assert that the lists are the same length, that `x` goes up to
    the max degree, and that all the values in `y` sum up to `n`.
@@ -78,17 +81,22 @@ of degrees in each graph.
 
 ### Degree Distribution
 `n10.txt`: Left-skewed, meaning all the nodes are nearly all connected
-to each other.
-`n100.txt`: A fairly sparse graph, since most of the nodes only have 1-2
-degrees and no node has tons of connections (the max degree is 5)
+to each other.  
+`n100.txt`: A fairly sparse graph, since most of the nodes only have
+degree 1 or 2 and no node has tons of connections (the max degree is 5).  
 `n1000.txt`, `n10000.txt`: Close to a bell curve, but slightly
 right-skewed. Most nodes are connected to a low-to-moderate amount of
 other nodes, and there are a few higher-degree nodes that are connected to
-more.
+more.  
 `s1.txt`: Possibly a hub-and-spoke: One node has a degree of 31, and
-the peak is at 1-2 degrees.
+the peak is at 2 degrees.  
 
-I also noticed that the number of connected components
-stayed low throughout the graphs: I thought that the larger the graph, the
-more connected components there would be, but `n10000.txt` only had 12, so
-node count doesn't necessarily predict component count.
+### Component Count
+I expected that larger graphs would have more components, but that didn't
+end up being the case. This is probably because larger graphs instead have
+more connections: the peak moved from degree 2 in `n100.txt`, to degree 3
+in `n1000.txt`, to degree 6 in `n10000.txt`. More connections means that more
+nodes are linked together, which is why component count didn't get drastically
+higher. The remaining components are mostly just isolated nodes (8 in `n100.txt`,
+14 in `n1000.txt`, 10 in `n10000.txt`). `s1.txt` and `n10.txt` have no isolated
+nodes, their components are all clusters.
