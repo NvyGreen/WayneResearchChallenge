@@ -19,7 +19,7 @@ analysis project.
 2. For each file, after reading the first line representing `N`, the
    number of nodes, I store the edges represented by the rest of the lines
    in a `dict[int, set]`, with the key being the node, and the value being
-   all the connected nodes. I used a `set` as to not count duplicate edges,
+   all the connected nodes. I used a `set` so duplicate edges aren't counted,
    and I treated the graph as undirected.
 3. To count the number of connected components, I used an iterative DFS
    approach with a stack. For each unvisited node, I'd traverse to every
@@ -27,9 +27,13 @@ analysis project.
    looped from 0 to `N-1` inclusive so isolated nodes were also counted.
    1. I originally tried using a recursive DFS approach, but I hit the
       recursion limit on `n10000.txt`.
-4. I also counted how many nodes had each degree in that same loop. When I
-   went to build the plot, I looped from 0 up to the max degree to get the
-   values. Any degrees without nodes were given a value of zero.
+4. I also counted how many nodes had each degree in that same loop. The loop
+   I do it in checks each node once, so I avoid double-counting. When I went
+   to build the plot, I looped from 0 up to the max degree to get the values.
+   Any degrees without nodes were given a value of zero. Self loops (`u == v`)
+   would affect the degree count, but I checked and there are none in the
+   sample files, so this case doesn't occur here. `N == 0` also doesn't occur
+   here, but if that does ever happen, the program skips drawing a plot.
 
 ### Validation
 1. To make sure my logic was correct, I created 3 sample text files in
