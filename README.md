@@ -7,22 +7,41 @@ analysis project.
 ## How to run
 - Requirements: Python 3, matplotlib
 - Run `challenge.ipynb`
-- Reads each file at the root of `sample_input/`, prints its component count,
-  and saves a degree histogram to `plots/`.
+- Reads each file at the root of `sample_input/` (not the test subfolder),
+  prints its component count, and saves a degree histogram to `plots/`.
 - The program will check the components algorithm on test graph files to make
   sure it has the correct output, and also assert that the x and y axes data
   is correct before writing a plot.
 
 ## Approach
-- **Graph storage:** adjacency list using a `set` per node — so duplicate
-  edges are ignored and degrees stay correct. Treated as undirected
-  (each edge added both ways).
-- **Connected components:** use iterative DFS and a stack to traverse
-  from an unvisited node to every node that can be reached from it.
-  Loop from 0 to N-1 (inclusive) so isolated nodes are also counted.
-- **Degree histogram:** tally how many nodes have each degree, from 0
-  up to the max degree. Any degree that doesn't have nodes gets filled
-  in with zero.
+1. I stored all of the given input files in `sample_input/`, then looped
+   through the directory to analyze each file.
+2. For each file, after reading the first line representing `N`, the
+   number of nodes, I store the edges represented by the rest of the lines
+   in a `dict[int, set]`, with the key being the node, and the value being
+   all the connected nodes. I used a `set` as to not count duplicate edges,
+   and I treated the graph as undirected.
+3. To count the number of connected components, I used an iterative DFS
+   approach with a stack. For each unvisited node, I'd traverse to every
+   other node I could reach from it, marking them visited on the way. I 
+   looped from 0 to `N-1` inclusive so isolated nodes were also counted.
+   1. I originally tried using a recursive DFS approach, but I hit the
+      recursion limit on `n10000.txt`.
+4. I also counted how many nodes had each degree in that same loop. When I
+   went to build the plot, I looped from 0 up to the max degree to get the
+   values. Any degrees without nodes were given a value of zero.
+
+### Validation
+1. To make sure my logic was correct, I created 3 sample text files in
+   `sample_input/test_input`: one with an isolated node, one with all
+   nodes connected, and one with no nodes connected. Because I knew the
+   results for these graphs, I could assert on them before I ran my code
+   on the real files. `assert sum(degrees.values()) == n` checks that
+   every node was accounted for when I looped for degree/component counting,
+   and I also assert that the component count is what I expected.
+2. Additionally, when I'm building the `x` and `y` values for the real files'
+   graphs, I assert that the lists are the same length, that `x` goes up to
+   the max degree, and that all the values in `y` sum up to `n`.
 
 ## Results
 | Graph | Nodes (N) | Connected components |
@@ -40,12 +59,17 @@ analysis project.
 ![n10000](plots/n10000.png)
 ![s1](plots/s1.png)
 
-## Verification
-The script asserts that the degree counts sum to N on every graph, and I
-validated the component logic against small hand-built test graphs with
-known answers, including one with an isolated node and one with no edges.
+## Commentary & Analysis
+I noticed that most of the graphs tend to be right-skewed, with a lot of
+nodes having a low degree count. This helps me visualize how the graphs
+might look: most nodes are connected to a low-to-moderate amount of
+other nodes, and there are a few higher-degree nodes that are connected
+to more. `s1.txt` and `n100.txt`, two of the smaller graphs, could follow
+the hub-and-spoke model a little closer, since they both peak at 1-2
+degrees. `n10.txt` is actually left-skewed, meaning all the nodes are nearly
+all connected to each other.
 
-## Notes / what I learned
-My first version of the algorithm used recursive DFS, but that hit Python's
-recursion limit on the 10,000-node graph. I rewrote it using an iterative stack
-approach instead.
+I also noticed that the number of connected components
+stayed low throughout the graphs: I thought that the larger the graph, the
+more connected components there would be, but `n10000.txt` only had 12, so
+node count doesn't necessarily predict component count.
