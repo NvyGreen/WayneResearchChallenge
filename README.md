@@ -13,6 +13,14 @@ analysis project.
   sure it has the correct output, and also assert that the x and y axes data
   is correct before writing a plot.
 
+## Challenge
+I was given a set of files that I stored at the root of `sample_input/`.
+The first line of each file represents `N`, the number of nodes, and
+subsequent lines represent edges. Each node is numbered from 0 to `N-1`.
+The goal was to calculate the number of connected components in each
+graph. Additionally, I also had to create a histogram of the distribution
+of degrees in each graph.
+
 ## Approach
 1. I stored all of the given input files in `sample_input/`, then looped
    through the directory to analyze each file.
