@@ -18,9 +18,11 @@ analysis project.
    through the directory to analyze each file.
 2. For each file, after reading the first line representing `N`, the
    number of nodes, I store the edges represented by the rest of the lines
-   in a `dict[int, set]`, with the key being the node, and the value being
-   all the connected nodes. I used a `set` so duplicate edges aren't counted,
-   and I treated the graph as undirected.
+   in a `defaultdict[int, set]`, with the key being the node, and the value
+   being all the connected nodes. I used a `set` so duplicate edges aren't
+   counted, and I treated the graph as undirected since I don't need to
+   check for strongly connected components. I also use `.strip()` to skip
+   over blank/whitespace only lines.
 3. To count the number of connected components, I used an iterative DFS
    approach with a stack. For each unvisited node, I'd traverse to every
    other node I could reach from it, marking them visited on the way. I 
