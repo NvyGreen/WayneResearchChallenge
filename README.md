@@ -28,9 +28,10 @@ of degrees in each graph.
    number of nodes, I store the edges represented by the rest of the lines
    in a `defaultdict[int, set]`, with the key being the node, and the value
    being all the connected nodes. I used a `set` so duplicate edges aren't
-   counted, and I treated the graph as undirected since I don't need to
-   check for strongly connected components. I also use `.strip()` to skip
-   over blank/whitespace only lines.
+   counted, and a `defaultdict` to make it easier to append nodes. I treated
+   the graph as undirected since the undergrad case doesn't require checking
+   for strongly connected components. I also use `.strip()` to ignore the
+   final trailing blank line in each file.
 3. To count the number of connected components, I used an iterative DFS
    approach with a stack. For each unvisited node, I'd traverse to every
    other node I could reach from it, marking them visited on the way. I 
@@ -74,14 +75,18 @@ of degrees in each graph.
 ![s1](plots/s1.png)
 
 ## Commentary & Analysis
-I noticed that most of the graphs tend to be right-skewed, with a lot of
-nodes having a low degree count. This helps me visualize how the graphs
-might look: most nodes are connected to a low-to-moderate amount of
-other nodes, and there are a few higher-degree nodes that are connected
-to more. `s1.txt` and `n100.txt`, two of the smaller graphs, could follow
-the hub-and-spoke model a little closer, since they both peak at 1-2
-degrees. `n10.txt` is actually left-skewed, meaning all the nodes are nearly
-all connected to each other.
+
+### Degree Distribution
+`n10.txt`: Left-skewed, meaning all the nodes are nearly all connected
+to each other.
+`n100.txt`: A fairly sparse graph, since most of the nodes only have 1-2
+degrees and no node has tons of connections (the max degree is 5)
+`n1000.txt`, `n10000.txt`: Close to a bell curve, but slightly
+right-skewed. Most nodes are connected to a low-to-moderate amount of
+other nodes, and there are a few higher-degree nodes that are connected to
+more.
+`s1.txt`: Possibly a hub-and-spoke: One node has a degree of 31, and
+the peak is at 1-2 degrees.
 
 I also noticed that the number of connected components
 stayed low throughout the graphs: I thought that the larger the graph, the
