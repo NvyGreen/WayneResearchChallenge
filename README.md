@@ -80,15 +80,15 @@ nodes count as components.
 ## Commentary & Analysis
 
 ### Degree Distribution
-`n10.txt`: Left-skewed, meaning all the nodes are nearly all connected
+- `n10.txt`: Left-skewed, meaning all the nodes are nearly all connected
 to each other.  
-`n100.txt`: A fairly sparse graph, since most of the nodes only have
+- `n100.txt`: A fairly sparse graph, since most of the nodes only have
 degree 1 or 2 and no node has tons of connections (the max degree is 5).  
-`n1000.txt`, `n10000.txt`: Close to a bell curve, but slightly
+- `n1000.txt`, `n10000.txt`: Close to a bell curve, but slightly
 right-skewed. Most nodes are connected to a low-to-moderate amount of
 other nodes, and there are a few higher-degree nodes that are connected to
 more.  
-`s1.txt`: Possibly a hub-and-spoke: One node has a degree of 31, and
+- `s1.txt`: Possibly a hub-and-spoke: One node has a degree of 31, and
 the peak is at 2 degrees.  
 
 ### Component Count
@@ -99,4 +99,4 @@ in `n1000.txt`, to degree 6 in `n10000.txt`. More connections means that more
 nodes are linked together, which is why component count didn't get drastically
 higher. The remaining components are mostly just isolated nodes (8 in `n100.txt`,
 14 in `n1000.txt`, 10 in `n10000.txt`). `s1.txt` and `n10.txt` have no isolated
-nodes, their components are all clusters.
+nodes: `n10.txt` is one connected component, and `s1.txt` has 6 separate clusters.
